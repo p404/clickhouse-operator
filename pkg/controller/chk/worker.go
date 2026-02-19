@@ -205,7 +205,7 @@ func (w *worker) finalizeReconcileAndMarkCompleted(ctx context.Context, _cr *api
 		ips := w.c.getPodsIPs(ctx, chi)
 		w.a.V(1).M(chi).Info("IPs of the CR-2 finalize reconcile %s/%s: len: %d %v", chi.Namespace, chi.Name, len(ips), ips)
 		opts := commonNormalizer.NewOptions[apiChk.ClickHouseKeeperInstallation]()
-		opts.DefaultUserAdditionalIPs = ips
+		// opts.DefaultUserAdditionalIPs = ips // Disabled: pod IP injection causes infinite reconcile loop when IPs change on restart
 		if chi, err := w.createCRFromObjectMeta(_cr, true, opts); err == nil {
 			w.a.V(1).M(chi).Info("Update users IPS-2")
 			chi.SetAncestor(chi.GetTarget())

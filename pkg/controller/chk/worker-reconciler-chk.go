@@ -103,7 +103,7 @@ func (w *worker) buildCR(ctx context.Context, _cr *apiChk.ClickHouseKeeperInstal
 	if len(ips) > 0 || len(templates) > 0 {
 		// Rebuild CR with known list of templates and additional IPs
 		opts := commonNormalizer.NewOptions[apiChk.ClickHouseKeeperInstallation]()
-		opts.DefaultUserAdditionalIPs = ips
+		// opts.DefaultUserAdditionalIPs = ips // Disabled: pod IP injection causes infinite reconcile loop when IPs change on restart
 		opts.Templates = templates
 		cr = w.createTemplatedCR(_cr, opts)
 		w.newTask(cr, cr.GetAncestorT())
