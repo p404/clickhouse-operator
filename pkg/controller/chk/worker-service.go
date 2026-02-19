@@ -77,6 +77,14 @@ func (w *worker) updateService(
 	targetService *core.Service,
 	prevService *core.Service,
 ) error {
+	// Normalize empty service type to ClusterIP (Kubernetes default)
+	// Fixes false-positive type change detection when operator does not explicitly set .Spec.Type
+	if targetService.Spec.Type == "" {
+		targetService.Spec.Type = core.ServiceTypeClusterIP
+	}
+	if curService.Spec.Type == "" {
+		curService.Spec.Type = core.ServiceTypeClusterIP
+	}
 	if curService.Spec.Type != targetService.Spec.Type {
 		return fmt.Errorf(
 			"just recreate the service in case of service type change '%s'=>'%s'",
